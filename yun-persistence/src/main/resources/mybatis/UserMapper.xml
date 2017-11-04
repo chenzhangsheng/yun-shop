@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="persistence.dao.UserDo">
+	<sql id="Base_Column_List">
+		id,account,password,phone_number,user,authorize,create_time,update_time,is_deleted,remarks
+	</sql>
+
+	<sql id="getList-Where">
+		WHERE xinxiren_user.is_deleted = 0
+		<if test="id !=null and id !=''">and id = #{id}</if>
+		<if test="account !=null and account !=''">and account = #{account}</if>
+		<if test="phoneNumber !=null and phoneNumber !=''">and phone_number = #{phoneNumber}</if>
+		<if test="userName !=null and userName !=''">and user = #{userName}</if>
+		<if test="authorize !=null and authorize !=''">and authorize = #{authorize}</if>
+		<if test="rid !=null and rid !=''">and rid = #{rid}</if>
+	</sql>
+
+	<sql id="updateUser-Set">
+		<if test="password !=null and password !=''"> password = #{password},</if>
+		<if test="phoneNumber !=null and phoneNumber !=''"> phone_number = #{phoneNumber},</if>
+		<if test="userName !=null and userName !=''"> user = #{userName},</if>
+		<if test="authorize !=null and authorize !=''"> authorize = #{authorize},</if>
+		<if test="rid !=null and rid !=''"> rid = #{rid},</if>
+		update_time=CURRENT_TIMESTAMP
+	</sql>
+
+	<resultMap id="UserRoleMap" type="domain.bean.XinxirenUserBean">
+		<id column="id" property="id"/>
+		<result column="account" property="account" />
+		<result column="password" property="password" />
+		<result column="phone_number" property="phoneNumber" />
+		<result column="user" property="userName" />
+		<result column="authorize" property="authorize" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="remarks" property="remarks" />
+		<association property="role" javaType="domain.Role">
+			<id column="id" property="id"/>
+			<result column="name" property="name" />
+			<result column="remarks" property="remarks" />
+			<result column="usable" property="usable" />
+		</association>
+	</resultMap>
+	<select id="GetUserList" resultMap="UserRoleMap" parameterType="common.query.XinxirenUserQuery">
+		SELECT
+		*
+		FROM
+		xinxiren_user LEFT JOIN role on xinxiren_user.rid = role.id
+		<include refid="getList-Where"></include>
+	</select>
+
+	<insert id="AddUser" keyProperty="id" useGeneratedKeys="true" parameterType="common.query.XinxirenUserQuery">
+		insert into xinxiren_user
+		(account,password,phone_number,user,authorize,create_time,update_time,is_deleted,remarks,rid)
+		values
+		(#{account},#{password},#{phoneNumber},#{userName},#{authorize},CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,0,#{remarks},#{rid})
+	</insert>
+
+	<select id="SelectOne" parameterType="common.query.XinxirenUserQuery" resultMap="UserRoleMap">
+		SELECT
+		*
+		FROM
+		xinxiren_user LEFT JOIN role on xinxiren_user.rid = role.id
+		<include refid="getList-Where"></include>
+	</select>
+
+	<update id="deleteUser">
+		UPDATE xinxiren_user SET is_deleted=1,update_time=CURRENT_TIMESTAMP WHERE is_deleted=0 and id=#{userId}
+	</update>
+
+	<update id="updateUser" parameterType="common.query.XinxirenUserQuery">
+		update
+		xinxiren_user set
+		<include refid="updateUser-Set"></include>
+		where is_deleted = 0
+		and id=#{id}
+	</update>
+
+</mapper>

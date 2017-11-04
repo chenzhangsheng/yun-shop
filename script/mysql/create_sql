@@ -1,0 +1,64 @@
+Date: 2017-10-20 23:59:16
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for role
+-- ----------------------------
+DROP TABLE IF EXISTS `role`;
+CREATE TABLE `role` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) DEFAULT NULL COMMENT '角色名称',
+  `remarks` varchar(255) DEFAULT NULL COMMENT '角色信息描述',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `create_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除（默认否; 0：否；1：是）',
+  `parentId` bigint(20) DEFAULT NULL COMMENT '父级角色id',
+  `usable` tinyint(1) DEFAULT '0' COMMENT '0停用，1开启',
+  `permission` varchar(255) NOT NULL DEFAULT '' COMMENT '权限菜单',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+Date: 2017-10-20 23:59:28
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for xinxiren_user
+-- ----------------------------
+DROP TABLE IF EXISTS `xinxiren_user`;
+CREATE TABLE `xinxiren_user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `account` varchar(255) DEFAULT NULL COMMENT '登录账号',
+  `password` varchar(255) DEFAULT NULL COMMENT '密码',
+  `phone_number` varchar(255) DEFAULT NULL COMMENT '联系电话',
+  `user` varchar(255) DEFAULT NULL COMMENT '姓名',
+  `authorize` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '0开启，1停用',
+  `create_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除(默认否; 0：否；1：是)',
+  `remarks` varchar(255) DEFAULT NULL COMMENT '备注',
+  `rid` bigint(20) NOT NULL COMMENT '角色id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+
+Date: 2017-10-21 00:01:26
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for permission
+-- ----------------------------
+DROP TABLE IF EXISTS `permission`;
+CREATE TABLE `permission` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `path` varchar(256) NOT NULL DEFAULT '' COMMENT 'url地址',
+  `name` varchar(64) DEFAULT NULL COMMENT 'url描述',
+  `create_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除(默认否; 0：否；1：是)',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;

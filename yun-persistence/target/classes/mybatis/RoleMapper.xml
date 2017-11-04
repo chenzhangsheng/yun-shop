@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="persistence.dao.RoleDo">
+	<sql id="Base_Column_List">
+		id,name,parentId,usable,create_time,update_time,is_deleted,remarks
+	</sql>
+
+	<sql id="getList-Where">
+		WHERE is_deleted = 0
+		<if test="id !=null and id !=''">and id = #{id}</if>
+		<if test="name !=null and name !=''">and name = #{name}</if>
+		<if test="usable !=null and usable !=''">and usable = #{usable}</if>
+		<if test="parentId !=null and parentId !=''">and parentId = #{parentId}</if>
+	</sql>
+	<sql id="updateRole-Set">
+		<if test="name !=null and name !=''"> name = #{name},</if>
+		<if test="usable !=null and usable !=''"> usable = #{usable},</if>
+		<if test="parentId !=null and parentId !=''"> parentId = #{parentId},</if>
+		<if test="permission !=null and permission !=''"> permission = #{permission},</if>
+		update_time=CURRENT_TIMESTAMP
+	</sql>
+
+	<select id="GetRoleList" resultType="domain.Role" parameterType="common.query.RoleQuery">
+		SELECT
+		role.*
+		FROM
+		role
+		<include refid="getList-Where"></include>
+	</select>
+
+	<insert id="addRole" keyProperty="id" useGeneratedKeys="true" parameterType="common.query.RoleQuery">
+		insert into role
+		(name,parentId,usable,create_time,update_time,is_deleted,remarks,permission)
+		values
+		(#{name},#{parentId},#{usable},CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,0,#{remarks},#{permission})
+	</insert>
+
+	<update id="deleteRole">
+		UPDATE role SET is_deleted=1,update_time=CURRENT_TIMESTAMP WHERE is_deleted=0 and id=#{roleId}
+	</update>
+	<update id="updateRole" parameterType="common.query.RoleQuery">
+		update
+		role set
+		<include refid="updateRole-Set"></include>
+		where is_deleted = 0
+		and id=#{id}
+	</update>
+
+	<select id="GetPermissionList" resultType="domain.Permission" >
+		SELECT
+		*
+		FROM
+		permission WHERE find_in_set(id,#{permission})
+		AND is_deleted = 0
+	</select>
+
+	<select id="GetRole" resultType="domain.Role" >
+		SELECT
+		role.*
+		FROM
+		role
+		where is_deleted = 0
+		and id=#{roleId}
+	</select>
+</mapper>
